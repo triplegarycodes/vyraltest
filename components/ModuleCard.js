@@ -1,10 +1,9 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { gradients, palette, shadows } from '../theme/colors';
 
-const ModuleCard = ({ title, description, children, icon, accentGradient = gradients.cardSurface }) => (
-  <LinearGradient colors={accentGradient} style={styles.card}>
+const ModuleCard = ({ title, description, children, icon }) => (
+  <LinearGradient colors={['rgba(26, 30, 44, 0.95)', 'rgba(16, 20, 34, 0.85)']} style={styles.card}>
     <View style={styles.headerRow}>
       <View style={styles.iconContainer}>{icon}</View>
       <View style={styles.titleWrap}>
@@ -12,7 +11,6 @@ const ModuleCard = ({ title, description, children, icon, accentGradient = gradi
         {description ? <Text style={styles.subtitle}>{description}</Text> : null}
       </View>
     </View>
-    <View style={styles.divider} />
     <View style={styles.content}>{children}</View>
   </LinearGradient>
 );
@@ -23,8 +21,12 @@ const styles = StyleSheet.create({
     padding: 24,
     marginVertical: 16,
     borderWidth: 1,
-    borderColor: 'rgba(110, 255, 233, 0.16)',
-    ...shadows.medium,
+    borderColor: 'rgba(110, 255, 233, 0.2)',
+    shadowColor: '#5B8AFF',
+    shadowOpacity: 0.3,
+    shadowRadius: 25,
+    shadowOffset: { width: 0, height: 14 },
+    elevation: 14,
   },
   headerRow: {
     flexDirection: 'row',
@@ -48,24 +50,18 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '700',
-    color: palette.textPrimary,
+    color: '#E8F6FF',
     letterSpacing: 1,
   },
   subtitle: {
     marginTop: 4,
     fontSize: 14,
-    color: palette.textSecondary,
+    color: 'rgba(157, 187, 255, 0.7)',
     letterSpacing: 0.5,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: 'rgba(91, 140, 255, 0.2)',
-    marginTop: 16,
-    marginBottom: 20,
   },
   content: {
     marginTop: 8,
   },
 });
 
-export default memo(ModuleCard);
+export default ModuleCard;

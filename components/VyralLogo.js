@@ -1,13 +1,12 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { palette, shadows } from '../theme/colors';
 
 const VyralLogo = () => (
   <View style={styles.wrapper}>
-    <LinearGradient colors={[palette.backgroundAlt, '#070A18']} style={styles.logoBackground}>
+    <LinearGradient colors={['#1B2235', '#080A12']} style={styles.logoBackground}>
       <LinearGradient
-        colors={[palette.neonAqua, palette.neonPurple]}
+        colors={['#46FFE3', '#7F5BFF']}
         start={{ x: 0.1, y: 0 }}
         end={{ x: 0.9, y: 1 }}
         style={styles.icon}
@@ -30,7 +29,11 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    ...shadows.heavy,
+    shadowColor: '#3CF9E3',
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 24 },
+    shadowRadius: 40,
+    elevation: 20,
   },
   icon: {
     width: 120,
@@ -50,17 +53,17 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 24,
     fontSize: 38,
-    color: palette.textPrimary,
+    color: '#E6F7FF',
     fontWeight: '700',
     letterSpacing: 4,
     textTransform: 'uppercase',
   },
   subtitle: {
     marginTop: 8,
-    color: palette.textSecondary,
+    color: 'rgba(164, 200, 255, 0.7)',
     fontSize: 16,
     letterSpacing: 1,
   },
 });
 
-export default memo(VyralLogo);
+export default VyralLogo;

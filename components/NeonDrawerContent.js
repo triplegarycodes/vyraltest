@@ -1,41 +1,27 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import { Ionicons } from '@expo/vector-icons';
-import { gradients, palette } from '../theme/colors';
 
-const NeonDrawerContent = ({ modules = [], ...props }) => (
-  <LinearGradient colors={gradients.drawer} style={styles.container}>
+const NeonDrawerContent = (props) => (
+  <LinearGradient colors={['#05070D', '#0A1120']} style={styles.container}>
     <ImageBackground
       source={{ uri: 'https://images.unsplash.com/photo-1545239351-1141bd82e8a6?auto=format&fit=crop&w=600&q=80' }}
       resizeMode="cover"
       style={styles.headerBackground}
       imageStyle={styles.headerImage}
     >
-      <LinearGradient colors={['rgba(5,8,16,0.88)', 'rgba(13,18,35,0.55)']} style={styles.headerOverlay}>
+      <LinearGradient colors={['rgba(5,8,16,0.8)', 'rgba(13,18,35,0.4)']} style={styles.headerOverlay}>
         <View style={styles.brandBadge}>
           <Text style={styles.brandLetter}>V</Text>
         </View>
         <View>
           <Text style={styles.brandName}>Vyral Suite</Text>
-          <Text style={styles.brandSubtitle}>Cybernetic Ops Network</Text>
+          <Text style={styles.brandSubtitle}>Cybernetic Ops</Text>
         </View>
       </LinearGradient>
     </ImageBackground>
     <DrawerContentScrollView {...props} contentContainerStyle={styles.scrollArea}>
-      <View style={styles.moduleMeta}>
-        <Text style={styles.moduleMetaTitle}>Active Modules</Text>
-        {modules.map((module) => (
-          <View key={module.key} style={styles.moduleRow}>
-            <Ionicons name={module.icon} size={18} color={palette.neonAqua} style={styles.moduleIcon} />
-            <View style={styles.moduleTextWrap}>
-              <Text style={styles.moduleName}>{module.title}</Text>
-              <Text style={styles.moduleSummary}>{module.summary}</Text>
-            </View>
-          </View>
-        ))}
-      </View>
       <DrawerItemList {...props} />
     </DrawerContentScrollView>
     <View style={styles.footer}>
@@ -62,6 +48,7 @@ const styles = StyleSheet.create({
     padding: 24,
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 16,
   },
   brandBadge: {
     width: 60,
@@ -81,51 +68,18 @@ const styles = StyleSheet.create({
     letterSpacing: 6,
   },
   brandName: {
-    color: palette.textPrimary,
+    color: '#E9FBFF',
     fontSize: 20,
     fontWeight: '700',
     letterSpacing: 1,
   },
   brandSubtitle: {
-    color: palette.textSecondary,
+    color: 'rgba(180, 212, 255, 0.65)',
     marginTop: 6,
-    letterSpacing: 0.8,
+    letterSpacing: 1,
   },
   scrollArea: {
     paddingTop: 8,
-  },
-  moduleMeta: {
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-  },
-  moduleMetaTitle: {
-    color: 'rgba(172, 209, 255, 0.75)',
-    fontSize: 12,
-    letterSpacing: 2,
-    marginBottom: 8,
-  },
-  moduleRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 14,
-  },
-  moduleIcon: {
-    marginTop: 2,
-    marginRight: 12,
-  },
-  moduleTextWrap: {
-    flex: 1,
-  },
-  moduleName: {
-    color: palette.textPrimary,
-    fontWeight: '600',
-    letterSpacing: 0.8,
-  },
-  moduleSummary: {
-    marginTop: 4,
-    color: palette.textSecondary,
-    fontSize: 12,
-    lineHeight: 16,
   },
   footer: {
     paddingVertical: 20,
@@ -139,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(NeonDrawerContent);
+export default NeonDrawerContent;
