@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ModuleCard from '../components/ModuleCard';
 import NeonButton from '../components/NeonButton';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ModuleScreen = ({ title, description, icon, onAction }) => {
   const insets = useSafeAreaInsets();
