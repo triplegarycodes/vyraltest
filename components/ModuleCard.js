@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const ModuleCard = ({ title, description, children, icon }) => (
   <LinearGradient colors={['rgba(26, 30, 44, 0.95)', 'rgba(16, 20, 34, 0.85)']} style={styles.card}>
