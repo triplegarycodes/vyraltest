@@ -54,15 +54,6 @@ const navigationTheme = {
   },
 };
 
-const createModuleScreen = (module) => () => (
-  <ModuleScreen
-    title={module.name}
-    description={module.description}
-    icon={<Ionicons name={module.icon} size={34} color="#66F7FF" />}
-    onAction={() => {}}
-  />
-);
-
 const App = () => (
   <GestureHandlerRootView style={{ flex: 1 }}>
     <LinearGradient colors={['#03050B', '#020309']} style={{ flex: 1 }}>
@@ -110,7 +101,14 @@ const App = () => (
               <Drawer.Screen
                 key={module.name}
                 name={module.name}
-                component={createModuleScreen(module)}
+                component={ModuleScreen}
+                initialParams={{
+                  moduleKey: module.name,
+                  fallbackTitle: module.name,
+                  fallbackDescription: module.description,
+                  fallbackIcon: module.icon,
+                  fallbackActionLabel: `Engage ${module.name}`,
+                }}
                 options={{
                   title: module.name,
                   drawerIcon: ({ color, size }) => <Ionicons name={module.icon} color={color} size={size} />,
