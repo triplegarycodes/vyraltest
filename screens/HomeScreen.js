@@ -7,25 +7,14 @@ import VyralLogo from '../components/VyralLogo';
 import ModuleCard from '../components/ModuleCard';
 import NeonButton from '../components/NeonButton';
 import supabase from '../lib/supabaseClient';
-import { getModuleAsset } from '../lib/moduleAssets';
 
 const HomeScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
   const fallbackModules = useMemo(
     () => [
       {
-        key: 'Stryke',
-        title: 'Stryke',
-        assetKey: 'stryke',
-        description: 'Revenue acceleration and sales orchestration.',
-        actionLabel: 'Launch Stryke',
-        routeName: 'Stryke',
-        moduleKey: 'Stryke',
-      },
-      {
         key: 'Core',
-        title: 'Core',
-        assetKey: 'core',
+        icon: 'flash-outline',
         description: 'Mission control and operational intelligence.',
         actionLabel: 'Launch Core',
         routeName: 'Core',
@@ -33,35 +22,15 @@ const HomeScreen = ({ navigation }) => {
       },
       {
         key: 'Zone',
-        title: 'Zone',
-        assetKey: 'zone',
+        icon: 'planet-outline',
         description: 'Spatial analytics and live command zones.',
         actionLabel: 'Launch Zone',
         routeName: 'Zone',
         moduleKey: 'Zone',
       },
       {
-        key: 'Skrybe',
-        title: 'Skrybe',
-        assetKey: 'skrybe',
-        description: 'Intelligent documentation and narrative systems.',
-        actionLabel: 'Launch Skrybe',
-        routeName: 'Skrybe',
-        moduleKey: 'Skrybe',
-      },
-      {
-        key: 'Lyfe',
-        title: 'Lyfe',
-        assetKey: 'lyfe',
-        description: 'Growth analytics and momentum tracking.',
-        actionLabel: 'Launch Lyfe',
-        routeName: 'Lyfe',
-        moduleKey: 'Lyfe',
-      },
-      {
         key: 'Tree',
-        title: 'Tree',
-        assetKey: 'tree',
+        icon: 'git-branch-outline',
         description: 'Organizational mapping and lineage tracking.',
         actionLabel: 'Launch Tree',
         routeName: 'Tree',
@@ -69,21 +38,19 @@ const HomeScreen = ({ navigation }) => {
       },
       {
         key: 'Board',
-        title: 'Board',
-        assetKey: 'board',
+        icon: 'grid-outline',
         description: 'Strategic dashboards and visualization.',
         actionLabel: 'Launch Board',
         routeName: 'Board',
         moduleKey: 'Board',
       },
       {
-        key: 'Vshop',
-        title: 'Vshop',
-        assetKey: 'vshop',
-        description: 'Commerce acceleration and monetization.',
-        actionLabel: 'Launch Vshop',
-        routeName: 'Vshop',
-        moduleKey: 'Vshop',
+        key: 'Stryke',
+        icon: 'rocket-outline',
+        description: 'Revenue acceleration and sales orchestration.',
+        actionLabel: 'Launch Stryke',
+        routeName: 'Stryke',
+        moduleKey: 'Stryke',
       },
     ],
     [],
@@ -108,7 +75,7 @@ const HomeScreen = ({ navigation }) => {
       setLoading(true);
       const { data, error: queryError } = await supabase
         .from('modules')
-        .select('id, key, name, title, description, icon, asset_key, route, slug, action_label, sort_order');
+        .select('id, key, name, title, description, icon, route, slug, action_label, sort_order');
 
       if (!isMounted) {
         return;
@@ -135,18 +102,15 @@ const HomeScreen = ({ navigation }) => {
         const normalized = sortedData.map((module) => {
           const routeName = module.route || module.name || module.title || module.key;
           const moduleKey = module.slug || module.key || module.name || routeName;
-          const assetKey =
-            module.asset_key || module.icon || module.slug || module.key || module.name || routeName;
 
           return {
             id: module.id ?? moduleKey ?? routeName,
             title: module.title || module.name || module.key || 'Module',
             description: module.description || '',
-            assetKey,
+            icon: module.icon || 'sparkles-outline',
             routeName,
             moduleKey,
             actionLabel: module.action_label,
-            icon: module.icon,
           };
         });
 
@@ -179,7 +143,6 @@ const HomeScreen = ({ navigation }) => {
       fallbackTitle: module.title || module.name || module.key,
       fallbackDescription: module.description,
       fallbackIcon: module.icon,
-      fallbackAssetKey: module.assetKey || module.icon || module.key,
       fallbackActionLabel: module.actionLabel,
     });
   };
@@ -205,28 +168,19 @@ const HomeScreen = ({ navigation }) => {
           {!loading && modulesToRender.length === 0 ? (
             <Text style={styles.emptyText}>No modules available at the moment.</Text>
           ) : null}
-          {modulesToRender.map((module) => {
-            const AssetComponent = getModuleAsset(module.assetKey || module.icon || module.key);
-            const iconElement = AssetComponent ? (
-              <AssetComponent width={52} height={52} style={styles.moduleIcon} />
-            ) : (
-              <Ionicons name={module.icon || 'sparkles-outline'} size={32} color="#6DF7FF" />
-            );
-
-            return (
-              <ModuleCard
-                key={module.id || module.key}
-                title={module.title || module.key}
-                description={module.description}
-                icon={iconElement}
-              >
-                <NeonButton
-                  label={module.actionLabel || `Launch ${module.title || module.key}`}
-                  onPress={() => handleLaunch(module)}
-                />
-              </ModuleCard>
-            );
-          })}
+          {modulesToRender.map((module) => (
+            <ModuleCard
+              key={module.id || module.key}
+              title={module.title || module.key}
+              description={module.description}
+              icon={<Ionicons name={module.icon} size={32} color="#6DF7FF" />}
+            >
+              <NeonButton
+                label={module.actionLabel || `Launch ${module.title || module.key}`}
+                onPress={() => handleLaunch(module)}
+              />
+            </ModuleCard>
+          ))}
         </View>
       </ScrollView>
     </LinearGradient>
@@ -260,19 +214,16 @@ const styles = StyleSheet.create({
     color: 'rgba(166, 210, 255, 0.75)',
     letterSpacing: 0.6,
   },
-  moduleIcon: {
-    width: 52,
-    height: 52,
-  },
   errorText: {
     marginBottom: 12,
     color: '#FF7E89',
     letterSpacing: 0.6,
   },
   emptyText: {
-    color: 'rgba(166, 210, 255, 0.75)',
+    marginTop: 16,
+    color: 'rgba(183, 214, 255, 0.8)',
+    fontSize: 15,
     textAlign: 'center',
-    marginVertical: 20,
   },
 });
 

@@ -6,7 +6,6 @@ import { Ionicons } from '@expo/vector-icons';
 import ModuleCard from '../components/ModuleCard';
 import NeonButton from '../components/NeonButton';
 import supabase from '../lib/supabaseClient';
-import { getModuleAsset } from '../lib/moduleAssets';
 
 const ModuleScreen = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
@@ -15,7 +14,6 @@ const ModuleScreen = ({ navigation, route }) => {
   const fallbackTitle = route?.params?.fallbackTitle || resolvedModuleKey || moduleKey;
   const fallbackDescription = route?.params?.fallbackDescription;
   const fallbackIcon = route?.params?.fallbackIcon || 'sparkles-outline';
-  const fallbackAssetKey = route?.params?.fallbackAssetKey;
   const fallbackActionLabel = route?.params?.fallbackActionLabel;
   const [moduleData, setModuleData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -48,7 +46,7 @@ const ModuleScreen = ({ navigation, route }) => {
 
       setLoading(true);
       const moduleSelect =
-        'name, title, description, long_description, icon, asset_key, action_label, action_copy, route, slug';
+        'name, title, description, long_description, icon, action_label, action_copy, route, slug';
       const columnsToTry = ['name', 'slug', 'key', 'title'];
       let moduleRecord = null;
       let queryError = null;
@@ -119,10 +117,7 @@ const ModuleScreen = ({ navigation, route }) => {
     return `The ${title} module is charging up its neon systems. Tap below to simulate an action while the team crafts the full feature set.`;
   }, [moduleData, title]);
 
-  const resolvedAssetKey =
-    moduleData?.asset_key || moduleData?.icon || moduleData?.slug || moduleData?.name || fallbackAssetKey;
-  const AssetComponent = getModuleAsset(resolvedAssetKey || resolvedModuleKey);
-  const iconName = AssetComponent ? null : moduleData?.icon || fallbackIcon || 'sparkles-outline';
+  const iconName = moduleData?.icon || fallbackIcon || 'sparkles-outline';
   const actionLabel = moduleData?.action_label || fallbackActionLabel || `Engage ${title}`;
 
   const handleEngageModule = useCallback(async () => {
@@ -163,13 +158,7 @@ const ModuleScreen = ({ navigation, route }) => {
         <ModuleCard
           title={title}
           description={description}
-          icon={
-            AssetComponent ? (
-              <AssetComponent width={56} height={56} style={styles.moduleIcon} />
-            ) : (
-              <Ionicons name={iconName} size={34} color="#66F7FF" />
-            )
-          }
+          icon={<Ionicons name={iconName} size={34} color="#66F7FF" />}
         >
           {loading ? (
             <View style={styles.loadingWrap}>
@@ -225,10 +214,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     color: 'rgba(166, 210, 255, 0.75)',
     letterSpacing: 0.6,
-  },
-  moduleIcon: {
-    width: 56,
-    height: 56,
   },
   errorText: {
     marginBottom: 12,
