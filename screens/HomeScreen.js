@@ -220,9 +220,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.6,
   },
   emptyText: {
-    color: 'rgba(166, 210, 255, 0.75)',
+    marginTop: 16,
+    color: 'rgba(183, 214, 255, 0.8)',
+    fontSize: 15,
     textAlign: 'center',
-    marginVertical: 20,
   },
 });
 
