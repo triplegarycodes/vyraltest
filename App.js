@@ -4,7 +4,7 @@ import { StatusBar, Platform, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import HomeScreen from './screens/HomeScreen';
 import ModuleScreen from './screens/ModuleScreen';
 import NeonDrawerContent from './components/NeonDrawerContent';
@@ -15,27 +15,27 @@ const moduleConfigs = [
   {
     name: 'Core',
     description: 'Mission control for synchronized intelligence.',
-    icon: 'flash',
+    icon: 'flash-outline',
   },
   {
     name: 'Zone',
     description: 'Command the battlefield with spatial awareness.',
-    icon: 'planet',
+    icon: 'planet-outline',
   },
   {
     name: 'Tree',
     description: 'Visualize growth across the neon collective.',
-    icon: 'git-branch',
+    icon: 'git-branch-outline',
   },
   {
     name: 'Board',
     description: 'Panels of insight with adaptive metrics.',
-    icon: 'grid',
+    icon: 'grid-outline',
   },
   {
     name: 'Stryke',
     description: 'Accelerate momentum and strike the market.',
-    icon: 'trending-up',
+    icon: 'rocket-outline',
   },
 ];
 
@@ -55,7 +55,7 @@ const createModuleScreen = (module) => () => (
   <ModuleScreen
     title={module.name}
     description={module.description}
-    icon={<Icon name={module.icon} size={34} color="#66F7FF" />}
+    icon={<Ionicons name={module.icon} size={34} color="#66F7FF" />}
     onAction={() => {}}
   />
 );
@@ -98,7 +98,7 @@ const App = () => (
           component={HomeScreen}
           options={{
             title: 'Vyral Home',
-            drawerIcon: ({ color, size }) => <Icon name="home" color={color} size={size} />,
+            drawerIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} />,
           }}
         />
         {moduleConfigs.map((module) => (
@@ -108,7 +108,7 @@ const App = () => (
             component={createModuleScreen(module)}
             options={{
               title: module.name,
-              drawerIcon: ({ color, size }) => <Icon name={module.icon} color={color} size={size} />,
+              drawerIcon: ({ color, size }) => <Ionicons name={module.icon} color={color} size={size} />,
             }}
           />
         ))}
