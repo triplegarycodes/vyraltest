@@ -1,4 +1,21 @@
 {
-  "name": "Vyral",
-  "displayName": "Vyral"
+  "expo": {
+    "name": "Vyral",
+    "slug": "vyral",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#05070D"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
 }

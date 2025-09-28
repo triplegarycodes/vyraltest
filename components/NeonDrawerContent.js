@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     padding: 24,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    gap: 16, // Modern React Native supports gap, otherwise use marginRight on brandBadge
   },
   brandBadge: {
     width: 60,
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(65, 242, 222, 0.18)',
     borderWidth: 1,
     borderColor: 'rgba(146, 107, 255, 0.6)',
+    marginRight: 16, // Retain marginRight for compatibility
   },
   brandLetter: {
     color: '#5DCCFF',

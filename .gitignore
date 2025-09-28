@@ -8,6 +8,9 @@ local.properties
 # Log/OS Files
 *.log
 
+# Node modules
+node_modules/
+
 # Android Studio generated files and folders
 captures/
 .externalNativeBuild/
