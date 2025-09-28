@@ -2,11 +2,13 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import VyralLogo from '../components/VyralLogo';
 import ModuleCard from '../components/ModuleCard';
 import NeonButton from '../components/NeonButton';
 
 const HomeScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const modules = [
     { key: 'Core', icon: 'flash-outline', description: 'Mission control and operational intelligence.' },
     { key: 'Zone', icon: 'planet-outline', description: 'Spatial analytics and live command zones.' },
@@ -17,7 +19,10 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <LinearGradient colors={['#050712', '#060B1A', '#020408']} style={styles.background}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={[styles.content, { paddingTop: insets.top + 40 }]}
+        contentInsetAdjustmentBehavior="automatic"
+      >
         <VyralLogo />
         <Text style={styles.tagline}>Plug into the neon network. Power every mission.</Text>
         <View style={styles.modulesWrap}>
@@ -43,7 +48,6 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 24,
-    paddingTop: 64,
     paddingBottom: 120,
   },
   tagline: {

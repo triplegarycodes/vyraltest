@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
     padding: 24,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
   },
   brandBadge: {
     width: 60,
@@ -59,6 +58,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(65, 242, 222, 0.18)',
     borderWidth: 1,
     borderColor: 'rgba(146, 107, 255, 0.6)',
+    marginRight: 16,
   },
   brandLetter: {
     color: '#5DCCFF',
