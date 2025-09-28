@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const NeonButton = ({ label, onPress }) => (
   <TouchableOpacity activeOpacity={0.85} onPress={onPress} style={styles.shadowWrap}>
