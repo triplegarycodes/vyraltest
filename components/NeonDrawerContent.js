@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ImageBackground } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 
 const NeonDrawerContent = (props) => (
