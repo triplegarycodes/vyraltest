@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import VyralLogo from '../components/VyralLogo';
 import ModuleCard from '../components/ModuleCard';
 import NeonButton from '../components/NeonButton';
