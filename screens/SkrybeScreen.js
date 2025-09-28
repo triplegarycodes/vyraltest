@@ -8,8 +8,6 @@ import NeonButton from '../components/NeonButton';
 import { useNeonTheme } from '../context/NeonThemeContext';
 import { deleteNote, fetchNotes, initNotesTable, insertNote } from '../lib/skrybeDb';
 
-const skrybeApiKey = process.env.EXPO_PUBLIC_SKRYBE_API_KEY || '';
-
 const SkrybeScreen = () => {
   const { themePalette, accentColor, fontScale } = useNeonTheme();
   const [notes, setNotes] = useState([]);
@@ -73,10 +71,6 @@ const SkrybeScreen = () => {
           active
         />
       </NeonCard>
-      <NeonCard>
-        <Text style={[styles.cardTitle, { color: themePalette.textPrimary, fontSize: 16 * fontScale }]}>API status</Text>
-        <Text style={[styles.cardDescription, { color: themePalette.textSecondary, fontSize: 12.5 * fontScale }]}>Key {skrybeApiKey ? 'linked' : 'not set'} (configure EXPO_PUBLIC_SKRYBE_API_KEY).</Text>
-      </NeonCard>
       {loading ? (
         <Text style={{ color: themePalette.textSecondary, fontSize: 14 * fontScale }}>Loading notes...</Text>
       ) : notes.length === 0 ? (
@@ -117,10 +111,6 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontWeight: '600',
     marginBottom: 12,
-  },
-  cardDescription: {
-    lineHeight: 18,
-    marginTop: 6,
   },
   input: {
     minHeight: 120,
