@@ -11,36 +11,33 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import HomeScreen from './screens/HomeScreen';
 import ModuleScreen from './screens/ModuleScreen';
 import NeonDrawerContent from './components/NeonDrawerContent';
+import { getAllModules } from './lib/localModuleData';
 
 const Drawer = createDrawerNavigator();
 
-const moduleConfigs = [
-  {
-    name: 'Core',
-    description: 'Mission control for synchronized intelligence.',
-    icon: 'flash-outline',
-  },
-  {
-    name: 'Zone',
-    description: 'Command the battlefield with spatial awareness.',
-    icon: 'planet-outline',
-  },
-  {
-    name: 'Tree',
-    description: 'Visualize growth across the neon collective.',
-    icon: 'git-branch-outline',
-  },
-  {
-    name: 'Board',
-    description: 'Panels of insight with adaptive metrics.',
-    icon: 'grid-outline',
-  },
-  {
-    name: 'Stryke',
-    description: 'Accelerate momentum and strike the market.',
-    icon: 'rocket-outline',
-  },
-];
+const normalizeModuleConfig = (module) => {
+  if (!module) {
+    return null;
+  }
+
+  const routeName = module.routeName || module.moduleKey || module.key || module.title;
+
+  if (!routeName) {
+    return null;
+  }
+
+  const normalizedKey = module.moduleKey || module.key || routeName;
+  const title = module.title || module.name || routeName;
+
+  return {
+    routeName,
+    moduleKey: normalizedKey,
+    title,
+    description: module.description || module.summary || '',
+    icon: module.icon || 'sparkles-outline',
+    actionLabel: module.actionLabel || `Engage ${title}`,
+  };
+};
 
 const navigationTheme = {
   ...DefaultTheme,
@@ -54,72 +51,93 @@ const navigationTheme = {
   },
 };
 
-const App = () => (
-  <GestureHandlerRootView style={{ flex: 1 }}>
-    <LinearGradient colors={['#03050B', '#020309']} style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <NavigationContainer theme={navigationTheme}>
-          <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
-          <Drawer.Navigator
-            initialRouteName="Home"
-            drawerContent={(props) => <NeonDrawerContent {...props} />}
-            screenOptions={{
-              headerTintColor: '#D7F8FF',
-              headerTitleStyle: {
-                letterSpacing: 2,
-                fontWeight: '700',
-              },
-              headerStyle: {
-                backgroundColor: '#050811',
-                borderBottomWidth: Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 0,
-                borderBottomColor: 'rgba(90, 134, 255, 0.3)',
-                shadowColor: 'transparent',
-                elevation: 0,
-              },
-              drawerType: 'slide',
-              overlayColor: 'rgba(31, 242, 210, 0.08)',
-              drawerActiveTintColor: '#57FFE7',
-              drawerInactiveTintColor: 'rgba(190, 215, 255, 0.6)',
-              drawerStyle: {
-                backgroundColor: 'transparent',
-                width: 280,
-              },
-              sceneContainerStyle: {
-                backgroundColor: 'transparent',
-              },
-            }}
-          >
-            <Drawer.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{
-                title: 'Vyral Home',
-                drawerIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} />,
+const App = () => {
+  const moduleConfigs = useMemo(() => {
+    const modules = getAllModules();
+    const normalizedModules = modules
+      .map((module) => normalizeModuleConfig(module))
+      .filter((module) => module !== null);
+
+    const uniqueModules = [];
+    const seenRoutes = new Set();
+
+    normalizedModules.forEach((module) => {
+      if (!seenRoutes.has(module.routeName)) {
+        seenRoutes.add(module.routeName);
+        uniqueModules.push(module);
+      }
+    });
+
+    return uniqueModules;
+  }, []);
+
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <LinearGradient colors={['#03050B', '#020309']} style={{ flex: 1 }}>
+        <SafeAreaProvider>
+          <NavigationContainer theme={navigationTheme}>
+            <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+            <Drawer.Navigator
+              initialRouteName="Home"
+              drawerContent={(props) => <NeonDrawerContent {...props} />}
+              screenOptions={{
+                headerTintColor: '#D7F8FF',
+                headerTitleStyle: {
+                  letterSpacing: 2,
+                  fontWeight: '700',
+                },
+                headerStyle: {
+                  backgroundColor: '#050811',
+                  borderBottomWidth: Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 0,
+                  borderBottomColor: 'rgba(90, 134, 255, 0.3)',
+                  shadowColor: 'transparent',
+                  elevation: 0,
+                },
+                drawerType: 'slide',
+                overlayColor: 'rgba(31, 242, 210, 0.08)',
+                drawerActiveTintColor: '#57FFE7',
+                drawerInactiveTintColor: 'rgba(190, 215, 255, 0.6)',
+                drawerStyle: {
+                  backgroundColor: 'transparent',
+                  width: 280,
+                },
+                sceneContainerStyle: {
+                  backgroundColor: 'transparent',
+                },
               }}
-            />
-            {moduleConfigs.map((module) => (
+            >
               <Drawer.Screen
-                key={module.name}
-                name={module.name}
-                component={ModuleScreen}
-                initialParams={{
-                  moduleKey: module.name,
-                  fallbackTitle: module.name,
-                  fallbackDescription: module.description,
-                  fallbackIcon: module.icon,
-                  fallbackActionLabel: `Engage ${module.name}`,
-                }}
+                name="Home"
+                component={HomeScreen}
                 options={{
-                  title: module.name,
-                  drawerIcon: ({ color, size }) => <Ionicons name={module.icon} color={color} size={size} />,
+                  title: 'Vyral Home',
+                  drawerIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} />,
                 }}
               />
-            ))}
-          </Drawer.Navigator>
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </LinearGradient>
-  </GestureHandlerRootView>
-);
+              {moduleConfigs.map((module) => (
+                <Drawer.Screen
+                  key={module.routeName}
+                  name={module.routeName}
+                  component={ModuleScreen}
+                  initialParams={{
+                    moduleKey: module.moduleKey,
+                    fallbackTitle: module.title,
+                    fallbackDescription: module.description,
+                    fallbackIcon: module.icon,
+                    fallbackActionLabel: module.actionLabel,
+                  }}
+                  options={{
+                    title: module.title,
+                    drawerIcon: ({ color, size }) => <Ionicons name={module.icon} color={color} size={size} />,
+                  }}
+                />
+              ))}
+            </Drawer.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </LinearGradient>
+    </GestureHandlerRootView>
+  );
+};
 
 export default App;
