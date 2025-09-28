@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, View, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -39,10 +39,13 @@ const HomeScreen = ({ navigation }) => {
     [entry],
   );
 
-  const handleLaunch = (module) => {
-    triggerReaction('module-launch');
-    navigation.navigate(module.name);
-  };
+  const handleLaunch = useCallback(
+    (module) => {
+      triggerReaction('module-launch');
+      navigation.navigate(module.name);
+    },
+    [navigation, triggerReaction],
+  );
 
   return (
     <LinearGradient colors={gradients.homeBackdrop} style={styles.background}>

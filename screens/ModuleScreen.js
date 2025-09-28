@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Animated, StyleSheet, Text, View, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ModuleCard from '../components/ModuleCard';
 import NeonButton from '../components/NeonButton';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { palette, gradients } from '../theme/colors';
 import { moduleMap } from '../constants/modules';
 import { useNeoMascot } from '../context/NeoMascotContext';
@@ -13,7 +13,10 @@ const ModuleScreen = ({ route }) => {
   const insets = useSafeAreaInsets();
   const { triggerReaction } = useNeoMascot();
   const entry = useRef(new Animated.Value(0)).current;
-  const module = useMemo(() => route?.params?.module ?? moduleMap.Core, [route?.params?.module]);
+  const activeModule = useMemo(
+    () => route?.params?.module ?? moduleMap.Core,
+    [route?.params?.module],
+  );
 
   useEffect(() => {
     Animated.timing(entry, {
@@ -24,11 +27,14 @@ const ModuleScreen = ({ route }) => {
     }).start();
   }, [entry]);
 
-  const placeholderCopy = `The ${module.title} module is calibrating advanced systems. Neo logs this rehearsal while engineering finalizes the live experience.`;
+  const placeholderCopy = [
+    `The ${activeModule.title} module is calibrating advanced systems. Neo logs this rehearsal while engineering`,
+    'finalizes the live experience.',
+  ].join(' ');
 
-  const handleEngage = () => {
+  const handleEngage = useCallback(() => {
     triggerReaction('module-engage');
-  };
+  }, [triggerReaction]);
 
   const animatedCard = useMemo(
     () => ({
@@ -50,15 +56,15 @@ const ModuleScreen = ({ route }) => {
       <View style={[styles.overlay, { paddingTop: insets.top + 40 }]}>
         <Animated.View style={animatedCard}>
           <ModuleCard
-            title={module.title}
-            description={module.description}
-            icon={<Ionicons name={module.icon} size={36} color={palette.neonAqua} />}
-            accentGradient={module.accentGradient}
+            title={activeModule.title}
+            description={activeModule.description}
+            icon={<Ionicons name={activeModule.icon} size={36} color={palette.neonAqua} />}
+            accentGradient={activeModule.accentGradient}
           >
             <Text style={styles.bodyText}>{placeholderCopy}</Text>
             <View style={styles.buttonWrap}>
               <NeonButton
-                label={module.actionLabel}
+                label={activeModule.actionLabel}
                 onPress={handleEngage}
                 icon={<Ionicons name="flash" size={18} color="#08101A" />}
               />

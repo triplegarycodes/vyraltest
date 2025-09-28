@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StatusBar, Platform, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,85 +15,90 @@ import { gradients, palette } from './theme/colors';
 
 const Drawer = createDrawerNavigator();
 
-const navigationTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: 'transparent',
-    card: '#070A15',
-    text: palette.textPrimary,
-    border: 'rgba(64, 89, 129, 0.4)',
-    primary: palette.neonAqua,
-  },
-};
+const App = () => {
+  const navigationTheme = useMemo(
+    () => ({
+      ...DefaultTheme,
+      colors: {
+        ...DefaultTheme.colors,
+        background: 'transparent',
+        card: '#070A15',
+        text: palette.textPrimary,
+        border: 'rgba(64, 89, 129, 0.4)',
+        primary: palette.neonAqua,
+      },
+    }),
+    [],
+  );
 
-const App = () => (
-  <NeoMascotProvider>
-    <GestureHandlerRootView style={styles.root}>
-      <LinearGradient colors={gradients.appShell} style={styles.gradientSurface}>
-        <SafeAreaProvider>
-          <NavigationContainer theme={navigationTheme}>
-            <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
-            <Drawer.Navigator
-              initialRouteName="Home"
-              drawerContent={(props) => <NeonDrawerContent {...props} modules={modules} />}
-              screenOptions={{
-                headerTintColor: palette.textPrimary,
-                headerTitleStyle: {
-                  letterSpacing: 2,
-                  fontWeight: '700',
-                },
-                headerStyle: {
-                  backgroundColor: 'rgba(5, 8, 17, 0.92)',
-                  borderBottomWidth: Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 0,
-                  borderBottomColor: 'rgba(90, 134, 255, 0.3)',
-                  shadowColor: 'transparent',
-                  elevation: 0,
-                },
-                drawerType: 'slide',
-                overlayColor: 'rgba(31, 242, 210, 0.08)',
-                drawerActiveTintColor: palette.neonAqua,
-                drawerInactiveTintColor: 'rgba(190, 215, 255, 0.6)',
-                drawerLabelStyle: {
-                  letterSpacing: 1,
-                  fontWeight: '600',
-                },
-                drawerStyle: {
-                  backgroundColor: 'transparent',
-                  width: 280,
-                },
-                sceneContainerStyle: {
-                  backgroundColor: 'transparent',
-                },
-              }}
-            >
-              <Drawer.Screen
-                name="Home"
-                component={HomeScreen}
-                options={{
-                  title: 'Vyral Home',
-                  drawerIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} />,
+  return (
+    <NeoMascotProvider>
+      <GestureHandlerRootView style={styles.root}>
+        <LinearGradient colors={gradients.appShell} style={styles.gradientSurface}>
+          <SafeAreaProvider>
+            <NavigationContainer theme={navigationTheme}>
+              <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+              <Drawer.Navigator
+                initialRouteName="Home"
+                drawerContent={(props) => <NeonDrawerContent {...props} modules={modules} />}
+                screenOptions={{
+                  headerTintColor: palette.textPrimary,
+                  headerTitleStyle: {
+                    letterSpacing: 2,
+                    fontWeight: '700',
+                  },
+                  headerStyle: {
+                    backgroundColor: 'rgba(5, 8, 17, 0.92)',
+                    borderBottomWidth: Platform.OS === 'ios' ? StyleSheet.hairlineWidth : 0,
+                    borderBottomColor: 'rgba(90, 134, 255, 0.3)',
+                    shadowColor: 'transparent',
+                    elevation: 0,
+                  },
+                  drawerType: 'slide',
+                  overlayColor: 'rgba(31, 242, 210, 0.08)',
+                  drawerActiveTintColor: palette.neonAqua,
+                  drawerInactiveTintColor: 'rgba(190, 215, 255, 0.6)',
+                  drawerLabelStyle: {
+                    letterSpacing: 1,
+                    fontWeight: '600',
+                  },
+                  drawerStyle: {
+                    backgroundColor: 'transparent',
+                    width: 280,
+                  },
+                  sceneContainerStyle: {
+                    backgroundColor: 'transparent',
+                  },
                 }}
-              />
-              {modules.map((module) => (
+              >
                 <Drawer.Screen
-                  key={module.key}
-                  name={module.name}
-                  component={ModuleScreen}
-                  initialParams={{ module }}
+                  name="Home"
+                  component={HomeScreen}
                   options={{
-                    title: module.title,
-                    drawerIcon: ({ color, size }) => <Ionicons name={module.icon} color={color} size={size} />,
+                    title: 'Vyral Home',
+                    drawerIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} />,
                   }}
                 />
-              ))}
-            </Drawer.Navigator>
-          </NavigationContainer>
-        </SafeAreaProvider>
-      </LinearGradient>
-    </GestureHandlerRootView>
-  </NeoMascotProvider>
-);
+                {modules.map((module) => (
+                  <Drawer.Screen
+                    key={module.key}
+                    name={module.name}
+                    component={ModuleScreen}
+                    initialParams={{ module }}
+                    options={{
+                      title: module.title,
+                      drawerIcon: ({ color, size }) => <Ionicons name={module.icon} color={color} size={size} />,
+                    }}
+                  />
+                ))}
+              </Drawer.Navigator>
+            </NavigationContainer>
+          </SafeAreaProvider>
+        </LinearGradient>
+      </GestureHandlerRootView>
+    </NeoMascotProvider>
+  );
+};
 
 export default App;
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
@@ -139,4 +139,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NeonDrawerContent;
+export default memo(NeonDrawerContent);

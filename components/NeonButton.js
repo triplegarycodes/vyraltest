@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { memo, useMemo, useRef } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { palette } from '../theme/colors';
@@ -81,4 +81,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(NeonButton);
+export default memo(NeonButton);

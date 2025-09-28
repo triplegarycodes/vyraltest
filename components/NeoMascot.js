@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { palette } from '../theme/colors';
@@ -115,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(NeoMascot);
+export default memo(NeoMascot);
