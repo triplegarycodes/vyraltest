@@ -17,11 +17,20 @@ import {
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView, PanGestureHandler } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as SQLite from 'expo-sqlite';
-import Animated, { FadeIn, FadeInUp, FadeInDown, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, {
+  FadeIn,
+  FadeInUp,
+  FadeInDown,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  useAnimatedGestureHandler,
+  runOnJS,
+} from 'react-native-reanimated';
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -128,6 +137,73 @@ const NeonButton = ({ title, icon, onPress, active }) => {
         </View>
       </LinearGradient>
     </TouchableOpacity>
+  );
+};
+
+const NeonSlider = ({ value, onChange, min = 0.85, max = 1.25, step = 0.05 }) => {
+  const { accentColor, palette } = useTheme();
+  const trackWidth = useSharedValue(0);
+  const progress = useSharedValue((value - min) / (max - min));
+
+  useEffect(() => {
+    const clamped = Math.max(0, Math.min(1, (value - min) / (max - min)));
+    progress.value = withTiming(clamped, { duration: 220 });
+  }, [value, min, max, progress]);
+
+  const gesture = useAnimatedGestureHandler({
+    onStart: (_, ctx) => {
+      ctx.start = progress.value;
+    },
+    onActive: (event, ctx) => {
+      const width = trackWidth.value;
+      if (!width) {
+        return;
+      }
+      const raw = ctx.start + event.translationX / width;
+      const clamped = Math.max(0, Math.min(1, raw));
+      progress.value = clamped;
+      if (onChange) {
+        const scaled = min + clamped * (max - min);
+        const stepped = Math.min(max, Math.max(min, Math.round(scaled / step) * step));
+        runOnJS(onChange)(Number(stepped.toFixed(2)));
+      }
+    },
+  });
+
+  const fillStyle = useAnimatedStyle(() => ({
+    width: trackWidth.value * progress.value,
+  }));
+
+  const knobStyle = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateX: progress.value * trackWidth.value,
+      },
+    ],
+  }));
+
+  return (
+    <View style={styles.sliderContainer}>
+      <View
+        style={[styles.sliderTrack, { backgroundColor: `${accentColor}22` }]}
+        onLayout={(event) => {
+          trackWidth.value = event.nativeEvent.layout.width;
+        }}
+      >
+        <Animated.View style={[styles.sliderFill, { backgroundColor: `${accentColor}aa` }, fillStyle]} />
+        <PanGestureHandler onGestureEvent={gesture}>
+          <Animated.View style={[styles.sliderKnobWrap, knobStyle]}>
+            <LinearGradient
+              colors={[accentColor, `${accentColor}66`]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[styles.sliderKnob, { shadowColor: accentColor, borderColor: `${accentColor}99` }]}
+            />
+          </Animated.View>
+        </PanGestureHandler>
+      </View>
+      <Text style={[styles.sliderValue, { color: palette.textSecondary }]}>{`${Math.round(value * 100)}%`}</Text>
+    </View>
   );
 };
 
@@ -431,6 +507,21 @@ const ZoneScreen = () => {
     { id: '3', author: 'Sable', text: 'Lyfe streak at 12 days. Progress bar humming neon.' },
   ]);
   const [composer, setComposer] = useState('');
+  const [composerVisible, setComposerVisible] = useState(false);
+  const composerProgress = useSharedValue(0);
+
+  useEffect(() => {
+    composerProgress.value = withTiming(composerVisible ? 1 : 0, { duration: 260 });
+  }, [composerVisible, composerProgress]);
+
+  const composerStyle = useAnimatedStyle(() => ({
+    opacity: composerProgress.value,
+    transform: [
+      {
+        translateY: (1 - composerProgress.value) * 36,
+      },
+    ],
+  }));
 
   const addPost = () => {
     if (!composer.trim()) return;
@@ -439,6 +530,7 @@ const ZoneScreen = () => {
       ...prev,
     ]);
     setComposer('');
+    setComposerVisible(false);
   };
 
   return (
@@ -447,7 +539,7 @@ const ZoneScreen = () => {
         <FlatList
           data={posts}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: 120, gap: 16 }}
+          contentContainerStyle={{ paddingBottom: 160, gap: 16 }}
           showsVerticalScrollIndicator={false}
           renderItem={({ item, index }) => (
             <Animated.View entering={FadeInUp.delay(index * 70)}>
@@ -458,23 +550,32 @@ const ZoneScreen = () => {
             </Animated.View>
           )}
         />
-        <LinearGradient
-          colors={['#00000000', palette.background]}
-          style={styles.zoneComposerWrap}
+        <Animated.View style={[styles.zoneComposerWrap, composerStyle]} pointerEvents={composerVisible ? 'auto' : 'none'}>
+          <LinearGradient
+            colors={['#00000000', palette.overlay]}
+            style={[styles.zoneComposerGradient, { borderColor: accentColor, shadowColor: accentColor }]}
+          >
+            <View style={[styles.chatComposer, { borderColor: accentColor }]}>
+              <TextInput
+                placeholder="Broadcast to the Zone..."
+                placeholderTextColor={`${palette.textSecondary}aa`}
+                value={composer}
+                onChangeText={setComposer}
+                style={[styles.chatInput, { color: palette.textPrimary, fontSize: 15 * fontScale }]}
+              />
+              <TouchableOpacity onPress={addPost} style={[styles.sendButton, { backgroundColor: accentColor }]}>
+                <Ionicons name="send" size={20 * fontScale} color="#02101a" />
+              </TouchableOpacity>
+            </View>
+          </LinearGradient>
+        </Animated.View>
+        <TouchableOpacity
+          onPress={() => setComposerVisible((prev) => !prev)}
+          activeOpacity={0.88}
+          style={[styles.fab, { backgroundColor: accentColor, shadowColor: accentColor }]}
         >
-          <View style={[styles.chatComposer, { borderColor: accentColor }]}>
-            <TextInput
-              placeholder="Broadcast to the Zone..."
-              placeholderTextColor={`${palette.textSecondary}aa`}
-              value={composer}
-              onChangeText={setComposer}
-              style={[styles.chatInput, { color: palette.textPrimary, fontSize: 15 * fontScale }]}
-            />
-            <TouchableOpacity onPress={addPost} style={[styles.sendButton, { backgroundColor: accentColor }]}>
-              <Ionicons name="add" size={20 * fontScale} color="#02101a" />
-            </TouchableOpacity>
-          </View>
-        </LinearGradient>
+          <Ionicons name={composerVisible ? 'close' : 'add'} size={26 * fontScale} color="#02101a" />
+        </TouchableOpacity>
       </View>
     </NeonScreen>
   );
@@ -605,20 +706,11 @@ const SettingsScreen = () => {
 
         <NeonCard>
           <Text style={[styles.settingLabel, { color: palette.textPrimary, fontSize: 16 * fontScale }]}>Font scale</Text>
-          <View style={styles.sliderRow}>
-            {[0.9, 1, 1.1, 1.2].map((scale) => (
-              <TouchableOpacity
-                key={scale}
-                onPress={() => setFontScale(scale)}
-                style={[
-                  styles.fontChip,
-                  { borderColor: accentColor, backgroundColor: fontScale === scale ? `${accentColor}33` : 'transparent' },
-                ]}
-              >
-                <Text style={[styles.fontChipText, { color: palette.textPrimary, fontSize: 14 * scale }]}>{`${Math.round(scale * 100)}%`}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <Text style={[styles.mutedText, { color: palette.textSecondary, marginTop: 6, fontSize: 13 * fontScale }]}>Slide to tune interface density.</Text>
+          <NeonSlider value={fontScale} onChange={setFontScale} />
+          <Text style={{ color: palette.textPrimary, marginTop: 16, fontSize: 14 * fontScale, lineHeight: 20 * fontScale }}>
+            “Signal clarity thrives when you calibrate the interface.”
+          </Text>
         </NeonCard>
 
         <NeonCard>
@@ -897,6 +989,15 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: 20,
+    zIndex: 20,
+  },
+  zoneComposerGradient: {
+    borderRadius: 24,
+    padding: 20,
+    borderWidth: 1,
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.35,
+    elevation: 10,
   },
   noteText: {
     lineHeight: 20,
@@ -923,22 +1024,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 0.5,
   },
-  sliderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 12,
-  },
-  fontChip: {
-    flex: 1,
-    paddingVertical: 10,
-    borderRadius: 14,
-    borderWidth: 1,
-    marginHorizontal: 4,
-    alignItems: 'center',
-  },
-  fontChipText: {
-    fontWeight: '600',
-  },
   swatchRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -952,5 +1037,57 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.6,
     elevation: 8,
+  },
+  sliderContainer: {
+    marginTop: 18,
+  },
+  sliderTrack: {
+    height: 8,
+    borderRadius: 999,
+    overflow: 'hidden',
+  },
+  sliderFill: {
+    height: '100%',
+    borderRadius: 999,
+  },
+  sliderKnobWrap: {
+    position: 'absolute',
+    top: -20,
+    left: 0,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: -24,
+  },
+  sliderKnob: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.6,
+    elevation: 8,
+  },
+  sliderValue: {
+    marginTop: 12,
+    textAlign: 'right',
+    fontSize: 13,
+    letterSpacing: 0.6,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 30,
+    right: 26,
+    width: 64,
+    height: 64,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.45,
+    elevation: 10,
+    zIndex: 30,
   },
 });
