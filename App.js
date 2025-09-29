@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import { NeonThemeProvider, useNeonTheme } from './context/NeonThemeContext';
+import { VyralDataProvider } from './context/VyralDataContext';
 import CoreScreen from './screens/CoreScreen';
 import LyfeScreen from './screens/LyfeScreen';
 import StrykeScreen from './screens/StrykeScreen';
@@ -83,8 +84,10 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <NeonThemeProvider>
-          <ThemedStatusBar />
-          <DrawerNavigator />
+          <VyralDataProvider>
+            <ThemedStatusBar />
+            <DrawerNavigator />
+          </VyralDataProvider>
         </NeonThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

@@ -1,12 +1,13 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Text, View, StyleSheet, Switch } from 'react-native';
-import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import ScreenShell from '../components/ScreenShell';
 import NeonCard from '../components/NeonCard';
 import NeonButton from '../components/NeonButton';
 import { accentChoices, useNeonTheme } from '../context/NeonThemeContext';
+import { useVyralData } from '../context/VyralDataContext';
 
 const FONT_RANGE = { min: 0.85, max: 1.25 };
 const SLIDER_WIDTH = 240;
@@ -14,15 +15,18 @@ const KNOB_SIZE = 28;
 
 const SettingsScreen = () => {
   const { themePalette, accentColor, setAccentColor, themeMode, toggleTheme, fontScale, setFontScale } = useNeonTheme();
+  const { xp, lessons, zonePosts, collaborationThreads, users, stryke } = useVyralData();
+  const completedLessons = useMemo(() => lessons.filter((lesson) => lesson.status === 'completed').length, [lessons]);
+  const friendCount = useMemo(() => users.filter((user) => user.isFriend).length, [users]);
 
   const ratio = useSharedValue((fontScale - FONT_RANGE.min) / (FONT_RANGE.max - FONT_RANGE.min));
   const sliderRange = SLIDER_WIDTH - KNOB_SIZE;
 
-  React.useEffect(() => {
+  useEffect(() => {
     ratio.value = withTiming((fontScale - FONT_RANGE.min) / (FONT_RANGE.max - FONT_RANGE.min), { duration: 200 });
   }, [fontScale, ratio]);
 
-  const updateScale = React.useCallback(
+  const updateScale = useCallback(
     (nextRatio) => {
       const clamped = Math.max(0, Math.min(1, nextRatio));
       const newScale = FONT_RANGE.min + clamped * (FONT_RANGE.max - FONT_RANGE.min);
@@ -96,11 +100,49 @@ const SettingsScreen = () => {
         <Text style={[styles.cardTitle, { color: themePalette.textPrimary, fontSize: 17 * fontScale }]}>Font scale</Text>
         <Text style={[styles.cardDescription, { color: themePalette.textSecondary, fontSize: 12.5 * fontScale }]}>Drag to adjust readability.</Text>
         <GestureDetector gesture={composedGesture}>
-          <View style={[styles.sliderTrack, { borderColor: accentColor }]}>            
+          <View style={[styles.sliderTrack, { borderColor: accentColor }]}>
             <Animated.View style={[styles.sliderKnob, { backgroundColor: accentColor }, knobStyle]} />
           </View>
         </GestureDetector>
         <Text style={[styles.scaleValue, { color: themePalette.textSecondary, fontSize: 12 * fontScale }]}>Current scale: {fontScale.toFixed(2)}</Text>
+      </NeonCard>
+      <NeonCard>
+        <Text style={[styles.cardTitle, { color: themePalette.textPrimary, fontSize: 17 * fontScale }]}>Vyral analytics</Text>
+        <Text style={[styles.cardDescription, { color: themePalette.textSecondary, fontSize: 12.5 * fontScale }]}>Quick snapshot of your neon impact.</Text>
+        <View style={styles.analyticsRow}>
+          <View style={[styles.metricCard, { borderColor: accentColor + '44' }]}>
+            <Ionicons name="flash" size={18} color={accentColor} style={styles.metricIcon} />
+            <Text style={[styles.metricValue, { color: themePalette.textPrimary, fontSize: 18 * fontScale }]}>{xp}</Text>
+            <Text style={[styles.metricLabel, { color: themePalette.textSecondary, fontSize: 11.5 * fontScale }]}>Total XP</Text>
+          </View>
+          <View style={[styles.metricCard, { borderColor: accentColor + '44' }]}>
+            <Ionicons name="book" size={18} color={accentColor} style={styles.metricIcon} />
+            <Text style={[styles.metricValue, { color: themePalette.textPrimary, fontSize: 18 * fontScale }]}>{completedLessons}</Text>
+            <Text style={[styles.metricLabel, { color: themePalette.textSecondary, fontSize: 11.5 * fontScale }]}>Lessons done</Text>
+          </View>
+          <View style={[styles.metricCard, { borderColor: accentColor + '44' }]}>
+            <Ionicons name="people" size={18} color={accentColor} style={styles.metricIcon} />
+            <Text style={[styles.metricValue, { color: themePalette.textPrimary, fontSize: 18 * fontScale }]}>{friendCount}</Text>
+            <Text style={[styles.metricLabel, { color: themePalette.textSecondary, fontSize: 11.5 * fontScale }]}>Crew allies</Text>
+          </View>
+        </View>
+        <View style={styles.analyticsRow}>
+          <View style={[styles.metricCard, { borderColor: accentColor + '44' }]}>
+            <Ionicons name="chatbubbles" size={18} color={accentColor} style={styles.metricIcon} />
+            <Text style={[styles.metricValue, { color: themePalette.textPrimary, fontSize: 18 * fontScale }]}>{zonePosts.length}</Text>
+            <Text style={[styles.metricLabel, { color: themePalette.textSecondary, fontSize: 11.5 * fontScale }]}>Zone posts</Text>
+          </View>
+          <View style={[styles.metricCard, { borderColor: accentColor + '44' }]}>
+            <Ionicons name="layers" size={18} color={accentColor} style={styles.metricIcon} />
+            <Text style={[styles.metricValue, { color: themePalette.textPrimary, fontSize: 18 * fontScale }]}>{collaborationThreads.length}</Text>
+            <Text style={[styles.metricLabel, { color: themePalette.textSecondary, fontSize: 11.5 * fontScale }]}>Projects</Text>
+          </View>
+          <View style={[styles.metricCard, { borderColor: accentColor + '44' }]}>
+            <Ionicons name="shield-checkmark" size={18} color={accentColor} style={styles.metricIcon} />
+            <Text style={[styles.metricValue, { color: themePalette.textPrimary, fontSize: 18 * fontScale }]}>{stryke.stats.trust}</Text>
+            <Text style={[styles.metricLabel, { color: themePalette.textSecondary, fontSize: 11.5 * fontScale }]}>Trust score</Text>
+          </View>
+        </View>
       </NeonCard>
     </ScreenShell>
   );
@@ -163,6 +205,29 @@ const styles = StyleSheet.create({
   scaleValue: {
     marginTop: 12,
     textAlign: 'right',
+  },
+  analyticsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 16,
+  },
+  metricCard: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    marginHorizontal: 4,
+  },
+  metricIcon: {
+    marginBottom: 6,
+  },
+  metricValue: {
+    fontWeight: '700',
+  },
+  metricLabel: {
+    letterSpacing: 0.4,
   },
 });
 
