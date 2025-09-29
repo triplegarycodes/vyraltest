@@ -30,7 +30,7 @@ const CoreScreen = () => {
   return (
     <ScreenShell>
       <View style={styles.headerRow}>
-        <Ionicons name="chatbubble-ellipses" size={26} color={accentColor} />
+        <Ionicons name="chatbubble-ellipses" size={26} color={accentColor} style={styles.headerIcon} />
         <Text style={[styles.title, { color: themePalette.textPrimary, fontSize: 22 * fontScale }]}>Core Channel</Text>
       </View>
       <Text style={[styles.subtitle, { color: themePalette.textSecondary, fontSize: 14 * fontScale }]}>
@@ -86,7 +86,7 @@ const CoreScreen = () => {
       </View>
       <NeonCard style={styles.composerCard}>
         <View style={styles.composerRow}>
-          <Ionicons name="create" color={accentColor} size={20} />
+          <Ionicons name="create" color={accentColor} size={20} style={styles.composerIcon} />
           <TextInput
             value={composer}
             onChangeText={setComposer}
@@ -98,6 +98,7 @@ const CoreScreen = () => {
             label="Send"
             onPress={handleSend}
             icon={<Ionicons name="arrow-up" size={18} color={themePalette.textPrimary} />}
+            style={styles.sendButton}
           />
         </View>
       </NeonCard>
@@ -133,7 +134,10 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    marginBottom: 12,
+  },
+  headerIcon: {
+    marginRight: 12,
   },
   title: {
     fontWeight: '700',
@@ -141,13 +145,15 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     lineHeight: 20,
+    marginBottom: 16,
   },
   messagesWrap: {
-    gap: 12,
     marginTop: 12,
+    marginBottom: 16,
   },
   messageRow: {
     flexDirection: 'row',
+    marginBottom: 12,
   },
   alignRight: {
     justifyContent: 'flex-end',
@@ -157,6 +163,7 @@ const styles = StyleSheet.create({
   },
   messageCard: {
     width: '78%',
+    marginBottom: 0,
   },
   rightCard: {
     alignSelf: 'flex-end',
@@ -181,10 +188,15 @@ const styles = StyleSheet.create({
   composerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+  },
+  composerIcon: {
+    marginRight: 12,
   },
   input: {
     flex: 1,
+  },
+  sendButton: {
+    marginLeft: 12,
   },
 });
 

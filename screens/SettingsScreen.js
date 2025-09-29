@@ -63,7 +63,7 @@ const SettingsScreen = () => {
   return (
     <ScreenShell>
       <View style={styles.headerRow}>
-        <Ionicons name="options" size={26} color={accentColor} />
+        <Ionicons name="options" size={26} color={accentColor} style={styles.headerIcon} />
         <Text style={[styles.title, { color: themePalette.textPrimary, fontSize: 22 * fontScale }]}>Settings</Text>
       </View>
       <Text style={[styles.subtitle, { color: themePalette.textSecondary, fontSize: 14 * fontScale }]}>Tune the glow across your network.</Text>
@@ -80,13 +80,14 @@ const SettingsScreen = () => {
         <Text style={[styles.cardTitle, { color: themePalette.textPrimary, fontSize: 17 * fontScale }]}>Accent color</Text>
         <Text style={[styles.cardDescription, { color: themePalette.textSecondary, fontSize: 12.5 * fontScale }]}>Select your signal hue.</Text>
         <View style={styles.swatchRow}>
-          {accentChoices.map((choice) => (
+          {accentChoices.map((choice, index) => (
             <NeonButton
               key={choice}
               label={choice.toUpperCase()}
               onPress={() => setAccentColor(choice)}
               active={accentColor === choice}
               icon={<Ionicons name="color-palette" size={18} color={themePalette.textPrimary} />}
+              style={[styles.swatchButton, index === accentChoices.length - 1 && styles.lastSwatch]}
             />
           ))}
         </View>
@@ -109,7 +110,10 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    marginBottom: 12,
+  },
+  headerIcon: {
+    marginRight: 12,
   },
   title: {
     fontWeight: '700',
@@ -117,6 +121,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     lineHeight: 20,
+    marginBottom: 18,
   },
   toggleRow: {
     flexDirection: 'row',
@@ -133,7 +138,12 @@ const styles = StyleSheet.create({
   },
   swatchRow: {
     marginTop: 12,
-    gap: 12,
+  },
+  swatchButton: {
+    marginBottom: 12,
+  },
+  lastSwatch: {
+    marginBottom: 0,
   },
   sliderTrack: {
     marginTop: 16,

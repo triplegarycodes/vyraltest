@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
     padding: 24,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
   },
   brandBadge: {
     width: 60,

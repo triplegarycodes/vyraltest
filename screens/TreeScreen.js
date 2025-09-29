@@ -82,7 +82,7 @@ const TreeScreen = () => {
   return (
     <ScreenShell>
       <View style={styles.headerRow}>
-        <Ionicons name="git-branch" size={26} color={accentColor} />
+        <Ionicons name="git-branch" size={26} color={accentColor} style={styles.headerIcon} />
         <Text style={[styles.title, { color: themePalette.textPrimary, fontSize: 22 * fontScale }]}>Tree Goals</Text>
       </View>
       <Text style={[styles.subtitle, { color: themePalette.textSecondary, fontSize: 14 * fontScale }]}>Tap nodes to expand and track nested missions.</Text>
@@ -97,7 +97,10 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    marginBottom: 12,
+  },
+  headerIcon: {
+    marginRight: 12,
   },
   title: {
     fontWeight: '700',
@@ -105,9 +108,10 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     lineHeight: 20,
+    marginBottom: 18,
   },
   treeWrap: {
-    gap: 12,
+    marginTop: 4,
   },
   nodeContainer: {
     marginBottom: 12,
@@ -115,7 +119,6 @@ const styles = StyleSheet.create({
   nodePressable: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
   },
   nodeBadge: {
     width: 34,
@@ -125,6 +128,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.02)',
+    marginRight: 12,
   },
   nodeTextWrap: {
     flex: 1,
@@ -138,7 +142,6 @@ const styles = StyleSheet.create({
   },
   childrenWrap: {
     marginTop: 12,
-    gap: 10,
   },
 });
 

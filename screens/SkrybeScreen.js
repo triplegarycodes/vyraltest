@@ -50,7 +50,7 @@ const SkrybeScreen = () => {
   return (
     <ScreenShell>
       <View style={styles.headerRow}>
-        <Ionicons name="document-text" size={26} color={accentColor} />
+        <Ionicons name="document-text" size={26} color={accentColor} style={styles.headerIcon} />
         <Text style={[styles.title, { color: themePalette.textPrimary, fontSize: 22 * fontScale }]}>Skrybe Notes</Text>
       </View>
       <Text style={[styles.subtitle, { color: themePalette.textSecondary, fontSize: 14 * fontScale }]}>Encrypted reflections persist across sessions.</Text>
@@ -99,7 +99,10 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    marginBottom: 12,
+  },
+  headerIcon: {
+    marginRight: 12,
   },
   title: {
     fontWeight: '700',
@@ -107,6 +110,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     lineHeight: 20,
+    marginBottom: 18,
   },
   cardTitle: {
     fontWeight: '600',

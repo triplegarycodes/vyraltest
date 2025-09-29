@@ -38,7 +38,7 @@ const StrykeScreen = () => {
   return (
     <ScreenShell>
       <View style={styles.headerRow}>
-        <Ionicons name="game-controller" size={26} color={accentColor} />
+        <Ionicons name="game-controller" size={26} color={accentColor} style={styles.headerIcon} />
         <Text style={[styles.title, { color: themePalette.textPrimary, fontSize: 22 * fontScale }]}>Stryke Missions</Text>
       </View>
       <Text style={[styles.subtitle, { color: themePalette.textSecondary, fontSize: 14 * fontScale }]}>Shape the story. Every choice ripples across the grid.</Text>
@@ -46,13 +46,14 @@ const StrykeScreen = () => {
         <Text style={[styles.promptLabel, { color: accentColor, fontSize: 12 * fontScale }]}>Scenario #{scenario.id}</Text>
         <Text style={[styles.promptText, { color: themePalette.textPrimary, fontSize: 18 * fontScale }]}>{scenario.prompt}</Text>
         <View style={styles.choiceRow}>
-          {scenario.choices.map((choice) => (
+          {scenario.choices.map((choice, index) => (
             <NeonButton
               key={choice.id}
               label={choice.label}
               active={choice.id === selectedChoice}
               onPress={() => setSelectedChoice(choice.id)}
               icon={<Ionicons name="sparkles" size={18} color={themePalette.textPrimary} />}
+              style={index === scenario.choices.length - 1 ? null : styles.choiceButton}
             />
           ))}
         </View>
@@ -77,7 +78,10 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    marginBottom: 12,
+  },
+  headerIcon: {
+    marginRight: 12,
   },
   title: {
     fontWeight: '700',
@@ -85,6 +89,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     lineHeight: 20,
+    marginBottom: 18,
   },
   promptLabel: {
     textTransform: 'uppercase',
@@ -98,7 +103,10 @@ const styles = StyleSheet.create({
   },
   choiceRow: {
     flexDirection: 'column',
-    gap: 12,
+    marginTop: 12,
+  },
+  choiceButton: {
+    marginBottom: 12,
   },
   impact: {
     fontWeight: '600',

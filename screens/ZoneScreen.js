@@ -46,7 +46,7 @@ const ZoneScreen = () => {
   return (
     <ScreenShell>
       <View style={styles.headerRow}>
-        <Ionicons name="people" size={26} color={accentColor} />
+        <Ionicons name="people" size={26} color={accentColor} style={styles.headerIcon} />
         <Text style={[styles.title, { color: themePalette.textPrimary, fontSize: 22 * fontScale }]}>Zone Feed</Text>
       </View>
       <Text style={[styles.subtitle, { color: themePalette.textSecondary, fontSize: 14 * fontScale }]}>Broadcast boosts to the whole squad.</Text>
@@ -82,12 +82,14 @@ const ZoneScreen = () => {
                     setComposerText('');
                   }}
                   icon={<Ionicons name="close" size={18} color={themePalette.textPrimary} />}
+                  style={styles.composerAction}
                 />
                 <NeonButton
                   label="Publish"
                   onPress={handlePublish}
                   active
                   icon={<Ionicons name="send" size={18} color={themePalette.textPrimary} />}
+                  style={styles.composerPublish}
                 />
               </View>
             </NeonCard>
@@ -110,7 +112,10 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    marginBottom: 12,
+  },
+  headerIcon: {
+    marginRight: 12,
   },
   title: {
     fontWeight: '700',
@@ -118,6 +123,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     lineHeight: 20,
+    marginBottom: 18,
   },
   postHeader: {
     flexDirection: 'row',
@@ -147,7 +153,12 @@ const styles = StyleSheet.create({
   composerActions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 12,
+  },
+  composerAction: {
+    marginRight: 12,
+  },
+  composerPublish: {
+    flex: 1,
   },
   fabWrapper: {
     marginTop: 12,

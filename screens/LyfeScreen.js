@@ -51,7 +51,7 @@ const LyfeScreen = () => {
   return (
     <ScreenShell>
       <View style={styles.headerRow}>
-        <Ionicons name="stats-chart" color={accentColor} size={26} />
+        <Ionicons name="stats-chart" color={accentColor} size={26} style={styles.headerIcon} />
         <Text style={[styles.title, { color: themePalette.textPrimary, fontSize: 22 * fontScale }]}>Lyfe Progress</Text>
       </View>
       <Text style={[styles.subtitle, { color: themePalette.textSecondary, fontSize: 14 * fontScale }]}>Power up your wellness quests and cash in XP.</Text>
@@ -73,7 +73,7 @@ const LyfeScreen = () => {
                 </Text>
               </View>
               <View style={styles.xpTag}>
-                <Ionicons name="flash" color={accentColor} size={16} />
+                <Ionicons name="flash" color={accentColor} size={16} style={styles.xpIcon} />
                 <Text style={[styles.xpText, { color: themePalette.textPrimary, fontSize: 13 * fontScale }]}>{lesson.xp} XP</Text>
               </View>
             </View>
@@ -82,6 +82,7 @@ const LyfeScreen = () => {
               active={lesson.complete}
               onPress={() => toggleLesson(lesson.id)}
               icon={<Ionicons name={lesson.complete ? 'checkmark-done' : 'play'} size={18} color={themePalette.textPrimary} />}
+              style={styles.lessonButton}
             />
           </NeonCard>
         </Animated.View>
@@ -94,7 +95,10 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    marginBottom: 12,
+  },
+  headerIcon: {
+    marginRight: 12,
   },
   title: {
     fontWeight: '700',
@@ -102,6 +106,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     lineHeight: 20,
+    marginBottom: 18,
   },
   progressLabel: {
     textTransform: 'uppercase',
@@ -124,8 +129,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    gap: 12,
     marginBottom: 14,
+  },
+  xpTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 12,
   },
   lessonTitle: {
     fontWeight: '700',
@@ -135,13 +144,14 @@ const styles = StyleSheet.create({
     marginTop: 4,
     lineHeight: 20,
   },
-  xpTag: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
   xpText: {
     fontWeight: '600',
+  },
+  xpIcon: {
+    marginRight: 6,
+  },
+  lessonButton: {
+    marginTop: 4,
   },
 });
 
