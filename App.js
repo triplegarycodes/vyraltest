@@ -1,21 +1,55 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform } from 'react-native';
 import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import * as SQLite from 'expo-sqlite';
 import HomeScreen from './screens/HomeScreen';
 import ModuleScreen from './screens/ModuleScreen';
 import CoreScreen from './CoreScreen';
 import LyfeScreen from './LyfeScreen';
+import SkrybeScreen from './screens/SkrybeScreen';
 import NeonDrawerContent from './components/NeonDrawerContent';
 import { NeoMascotProvider } from './context/NeoMascotContext';
 import { getAllModules } from './lib/localModuleData';
 
 const Drawer = createDrawerNavigator();
 
+const openNotesDb = async () => {
+  if (Platform.OS === 'web') {
+    return null;
+  }
+
+  if (typeof SQLite?.openDatabase !== 'function') {
+    return null;
+  }
+
+  if (typeof SQLite.isAvailableAsync === 'function') {
+    try {
+      const available = await SQLite.isAvailableAsync();
+      if (!available) {
+        return null;
+      }
+    } catch (error) {
+      console.warn('[Skrybe] SQLite availability check failed', error);
+      return null;
+    }
+  }
+
+  try {
+    return SQLite.openDatabase('vyral-notes.db');
+  } catch (error) {
+    console.warn('[Skrybe] Unable to open notes database', error);
+    return null;
+  }
+};
+
+const SkrybeScreenWithDb = (props) => <SkrybeScreen {...props} openNotesDb={openNotesDb} />;
+
 const dedicatedModuleComponents = {
   Core: CoreScreen,
+  Skrybe: SkrybeScreenWithDb,
   Lyfe: LyfeScreen,
 };
 
